@@ -29,8 +29,7 @@ def split_nodes_by_delimiter(node_list: list[TextNode], delimiter: str, type_of_
         delimiter (str) : delimiter to be detected
         type_of_split (TextType) : type for any newly created nodes
 
-    Notes:
-        Not to be used to detect/split images/links
+    Do not use for images/links; other functions exist for those.
     """
     new_nodes: list[TextNode] = []
 
@@ -162,7 +161,7 @@ def extract_markdown_links(text):
 
 
 
-def text_to_textnodes(text):
+def text_to_text_nodes(text):
     """
     Converts text string into a flat (no children) structure
     of normal/italic/bold/image/link nodes.
@@ -211,8 +210,8 @@ def markdown_to_blocks(markdown: str):
 
 def block_to_block_type(block: str):
     """
-    Identifies the type of a given text block (paragraph, code, header, etc).
-    It does this by pattern checking the first characters of each line.
+    Identifies type of given text block (paragraph, code, header, etc).
+    Does this by pattern checking leading characters.
     """
     block_type: BlockType = BlockType.PARAGRAPH
 
@@ -224,27 +223,35 @@ def block_to_block_type(block: str):
     
     elif block[0] == ">":
         block_type = BlockType.QUOTE
-        lines = block.split("\n")
-        for line in lines:
+        for line in block.split("\n"):
             if line[0] != ">": block_type = BlockType.PARAGRAPH
     
-    elif block[0] == "*":
+    elif block[0:2] == "* ":
         block_type = BlockType.UNORDERED_LIST
-        lines = block.split("\n")
-        for line in lines:
-            if line[0] != "*": block_type = BlockType.PARAGRAPH
+        for line in block.split("\n"):
+            if line[0:2] != "* ": block_type = BlockType.PARAGRAPH
     
-    elif block[0] == "-":
+    elif block[0:2] == "- ":
         block_type = BlockType.UNORDERED_LIST
-        lines = block.split("\n")
-        for line in lines:
-            if line[0] != "-": block_type = BlockType.PARAGRAPH
+        for line in block.split("\n"):
+            if line[0:2] != "- ": block_type = BlockType.PARAGRAPH
     
-    elif len(re.findall("[0-9]*. ", block[0:])) > 0:
-        block_type = BlockType.ORDERED_LIST
-        lines = block.split("\n")
-        for line in lines:
-            if len(re.findall("[0-9]*. ", block[0:])) == 0: block_type = BlockType.PARAGRAPH
+    elif re.match("[0-9]*. ", block[0:]) != None:
+        block_type = BlockType.ORDERED_LIST # pre-emptive positive, to be negated in logic
+        expected_num = 0
 
+        # each line must start 'n. ' with n ascending from 1
+        for line in block.split("\n"):
+            # if line prefix not per convention, block is not an ordered list
+            list_item_prefix = re.match("[0-9]*. ", line[0:]).group(0)
+            if list_item_prefix is None:
+                block_type = BlockType.PARAGRAPH
+
+            # if line number not sequential, block is not an ordered list
+            item_num = int(re.match("[0-9]*", line[0:]).group(0))
+            expected_num += 1
+            if item_num != expected_num:
+                block_type = BlockType.PARAGRAPH
+            
     return block_type       
 

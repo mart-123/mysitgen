@@ -2,7 +2,7 @@ import unittest
 from textnode import TextNode, TextType
 from markdown_processor import split_nodes_by_delimiter, extract_markdown_images, extract_markdown_links
 from markdown_processor import split_nodes_image, split_nodes_link
-from markdown_processor import text_to_textnodes, markdown_to_blocks, BlockType, block_to_block_type
+from markdown_processor import text_to_text_nodes, markdown_to_blocks, BlockType, block_to_block_type
 
 class TestNodeSplitter(unittest.TestCase):
     def test_split_bold(self):
@@ -240,7 +240,7 @@ class TestNodeSplitter(unittest.TestCase):
 
     def test_text_to_textnodes(self):
         base_text = "This is **text** with an *italic* word and a `code block` and an ![obi wan image](https://i.imgur.com/fJRm4Vk.jpeg) and a [link](https://boot.dev)"
-        text_nodes = text_to_textnodes(base_text)
+        text_nodes = text_to_text_nodes(base_text)
 
         self.assertEqual(text_nodes[0].text, "This is ")
         self.assertEqual(text_nodes[0].text_type, TextType.NORMAL)
@@ -291,7 +291,7 @@ This is a paragraph of text. It has some **bold** and *italic* words inside of i
 
     def test_text_to_textnodes(self):
         base_text = "This is **text** with an *italic* word and a `code block` and an ![obi wan image](https://i.imgur.com/fJRm4Vk.jpeg) and a [link](https://boot.dev)"
-        text_nodes = text_to_textnodes(base_text)
+        text_nodes = text_to_text_nodes(base_text)
 
         self.assertEqual(text_nodes[0].text, "This is ")
         self.assertEqual(text_nodes[0].text_type, TextType.NORMAL)
@@ -338,3 +338,7 @@ This is a paragraph of text. It has some **bold** and *italic* words inside of i
         block_type = block_to_block_type(ordered_list)
         self.assertEqual(block_type, BlockType.ORDERED_LIST)
 
+
+
+if __name__ == "__main__":
+    unittest.main()
