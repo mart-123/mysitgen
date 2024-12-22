@@ -1,9 +1,14 @@
 import re
+import os
 from copy_directory import copy_directory
 
 def main():
-    result: int = copy_directory('static', 'public')
-    print(f"result: {result}")
+    src = "static"
+    dest = "public"
+    src = f"{os.getcwd()}/{src}"
+    dest = f"{os.getcwd()}/{dest}"
+
+    copy_directory(src, dest)
 
 
 

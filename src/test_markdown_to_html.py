@@ -52,6 +52,23 @@ class test_markdown_to_html(unittest.TestCase):
         self.assertEqual(html.to_html(), expected)
 
 
+    def test_heading_block(self):
+#        print(f"RUNNING TEST: {__name__}.{inspect.currentframe().f_code.co_name}")
+        text = "# Level 1 heading"
+        html: ParentNode = markdown_to_html(text)
+        expected = '<div><h1>Level 1 heading</h1></div>'
+        self.assertEqual(html.to_html(), expected)
+
+        text = "## Level 2 heading"
+        html: ParentNode = markdown_to_html(text)
+        expected = '<div><h2>Level 2 heading</h2></div>'
+        self.assertEqual(html.to_html(), expected)
+
+        text = "###### Level 6 heading"
+        html: ParentNode = markdown_to_html(text)
+        expected = '<div><h6>Level 6 heading</h6></div>'
+        self.assertEqual(html.to_html(), expected)
+
 
 def print_diagnostics(html: ParentNode):
     """

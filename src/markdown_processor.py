@@ -255,3 +255,16 @@ def block_to_block_type(block: str):
             
     return block_type       
 
+
+def extract_title(markdown: str):
+    lines = markdown.split('\n')
+    i = 0
+    title = None
+
+    while i < len(lines) and title is None:
+        if lines[i].strip()[0:2] == '# ':
+            title = lines[i][2:].strip()
+        
+        i += 1
+
+    return title

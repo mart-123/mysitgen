@@ -41,6 +41,9 @@ def markdown_to_html(markdown: str):
         elif block_type == BlockType.ORDERED_LIST:
             new_node = ordered_list_block_to_html(block)
             final_html_nodes.append(new_node)
+        elif block_type == BlockType.HEADING:
+            new_node = heading_block_to_html(block)
+            final_html_nodes.append(new_node)
 
         # Return HTML 'ol' parent node containing 'li' child nodes
     div_html_node = ParentNode('div', final_html_nodes, None)
@@ -147,3 +150,19 @@ def ordered_list_block_to_html(block):
     return ol_html_node
 
 
+
+def heading_block_to_html(block):
+    """
+    Converts heading block to 'heading' html node with
+    tag <h1> - <h6> depending on how many # characters.
+    Helper function for markdown_to_html.
+    """
+    heading_md = re.findall("#{1,6}", block[0:7])[0]
+    heading_level = len(heading_md)
+    heading_tag = f"h{heading_level}"
+    heading_text = block[heading_level + 1:]
+
+    # Create new heading node
+    heading_html_node = LeafNode(heading_tag, heading_text, None)
+
+    return heading_html_node

@@ -1,7 +1,7 @@
 import unittest
 from textnode import TextNode, TextType
 from markdown_processor import split_nodes_by_delimiter, extract_markdown_images, extract_markdown_links
-from markdown_processor import split_nodes_image, split_nodes_link
+from markdown_processor import split_nodes_image, split_nodes_link, extract_title
 from markdown_processor import text_to_text_nodes, markdown_to_blocks, BlockType, block_to_block_type
 
 class TestNodeSplitter(unittest.TestCase):
@@ -338,6 +338,16 @@ This is a paragraph of text. It has some **bold** and *italic* words inside of i
         block_type = block_to_block_type(ordered_list)
         self.assertEqual(block_type, BlockType.ORDERED_LIST)
 
+
+    def test_extract_title(self):
+        heading = extract_title("# main heading")
+        self.assertEqual(heading, "main heading")
+
+        heading = extract_title("# main heading#\n## secondary heading ")
+        self.assertEqual(heading, "main heading#")
+
+        heading = extract_title("\n# main heading")
+        self.assertEqual(heading, "main heading")
 
 
 if __name__ == "__main__":
