@@ -1,12 +1,9 @@
 import re
-from markdown_to_html import markdown_to_html
+from copy_directory import copy_directory
 
 def main():
-    test_data = "a simple markdown document with no markdown tags"
-
-    results = markdown_to_html(test_data)
-
-    print(f"RESULTS: {results}")
+    result: int = copy_directory('static', 'public')
+    print(f"result: {result}")
 
 
 
