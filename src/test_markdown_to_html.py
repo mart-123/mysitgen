@@ -31,24 +31,32 @@ class test_markdown_to_html(unittest.TestCase):
 
 
     def test_quote_block(self):
-        text = ">My three-line\n>block of\n>quotiness"
+        text = "> My three-line\n> block of\n>   quotiness"
         html: ParentNode = markdown_to_html(text)
         expected = '<div><blockquote>My three-line\nblock of\nquotiness</blockquote></div>'
         self.assertEqual(html.to_html(), expected)
 
+        text = """
+> All that is gold does not glitter
+
+"""
+        html: ParentNode = markdown_to_html(text)
+        expected = '<div><blockquote>All that is gold does not glitter</blockquote></div>'
+        self.assertEqual(html.to_html(), expected)
+
 
     def test_ul_block(self):
-        text = "* One thing\n* And another thing\n* and just one more thing"
+        text = "* One thing\n* And another thing\n* and *just* **one more thing**"
         html: HtmlNode = markdown_to_html(text)
-        expected = '<div><ul><li>One thing</li><li>And another thing</li><li>and just one more thing</li></ul></div>'
+        expected = '<div><ul><li>One thing</li><li>And another thing</li><li>and <i>just</i> <b>one more thing</b></li></ul></div>'
         self.assertEqual(html.to_html(), expected)
 
 
     def test_ol_block(self):
 #        print(f"RUNNING TEST: {__name__}.{inspect.currentframe().f_code.co_name}")
-        text = "1. One thing\n2. Two thing\n3. Three thing"
+        text = "1. One **thing**\n2. **Two thing**\n3. *Three thing*"
         html: ParentNode = markdown_to_html(text)
-        expected = '<div><ol><li>One thing</li><li>Two thing</li><li>Three thing</li></ol></div>'
+        expected = '<div><ol><li>One <b>thing</b></li><li><b>Two thing</b></li><li><i>Three thing</i></li></ol></div>'
         self.assertEqual(html.to_html(), expected)
 
 

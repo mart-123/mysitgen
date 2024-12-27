@@ -257,6 +257,9 @@ def block_to_block_type(block: str):
 
 
 def extract_title(markdown: str):
+    """
+    Gets 'title' (h1 header) from a markdown document.
+    """
     lines = markdown.split('\n')
     i = 0
     title = None
@@ -267,4 +270,7 @@ def extract_title(markdown: str):
         
         i += 1
 
+    if title is None or title == '':
+        raise Exception("Document contains no title (top level # header)")
+    
     return title

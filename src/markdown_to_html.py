@@ -10,11 +10,11 @@ from htmlnode import HtmlNode
 
 def markdown_to_html(markdown: str):
     """
-    Converts markdown document to html document. Several stages:
-        - Convert markdown document to blocks
+    Main control logic for converting markdown document to html.
+        - Split markdown into blocks
         - Transform each block to text node(s)
         - Convert text nodes to html nodes
-        - Combine html nodes into html document
+        - Render html nodes into final html document
     """
     # Split markdown into 'blocks' (delineated by blank lines)
     markdown_blocks: list[str] = markdown_to_blocks(markdown)
@@ -100,7 +100,7 @@ def quote_block_to_html(block):
 
     # Remove '>' from beginning of each line of quote block
     for line in block.split("\n"):
-        stripped_lines.append(line[1:])
+        stripped_lines.append(line[1:].strip())
 
     # Reconstitute the quote block without the '>' prefixes    
     quote_text = '\n'.join(stripped_lines)
@@ -122,7 +122,14 @@ def unordered_list_block_to_html(block):
 
     # For each list item, remove '* ' or '- ' prefix and create html leaf node
     for line in block.split('\n'):
-        list_items.append(LeafNode('li', line[2:], None))
+        # Split list item into text nodes of embedded types (italic, bold,link, etc)
+        sub_nodes = text_to_text_nodes(line[2:].strip())
+        sub_html = []
+        for text_node in sub_nodes:
+            html_node = text_node_to_html_node(text_node)
+            sub_html.append(html_node)
+
+        list_items.append(ParentNode('li', sub_html, None))
 
     # Return HTML 'ul' parent node containing 'li' child nodes
     ul_html_node = ParentNode('ul', list_items, None)
@@ -140,8 +147,17 @@ def ordered_list_block_to_html(block):
 
     # For each list item, remove 'n. ' prefix and create html leaf node
     for line in block.split('\n'):
-        after_prefix = re.match("[0-9]*. ", line[0:]).end(0)
-        list_item = LeafNode('li', line[after_prefix:], None)
+        pos_after_prefix = re.match("[0-9]*. ", line[0:]).end(0)
+
+
+        # Split list item into text nodes of embedded types (italic, bold,link, etc)
+        sub_nodes = text_to_text_nodes(line[pos_after_prefix:].strip())
+        sub_html = []
+        for text_node in sub_nodes:
+            html_node = text_node_to_html_node(text_node)
+            sub_html.append(html_node)
+
+        list_item = ParentNode('li', sub_html, None)
         list_items.append(list_item)
 
     # Return HTML 'ol' parent node containing 'li' child nodes

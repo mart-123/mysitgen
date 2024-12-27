@@ -2,12 +2,18 @@ import os
 import shutil
 
 def copy_directory(src, dest, level: int = 0):
+    """
+    Copies source directory (files and sub-directories) to destination.
+    Calls itself recursively to handle sub-directories.
+    """
+    print(f"\nCopying directory...\nsrc: {src}\ndest: {dest}\n")
     # on first (non-) recursion, validate source and remove destination (clean start)
     if level == 0:
         if os.path.exists(src) == False:
-            raise Exception(f"Source directory not found: {src}")
+            raise Exception(f"\nSource directory not found: {src}")
 
         if os.path.exists(dest) == True:
+            print(f"\nDeleting old destination directory: {dest}")
             shutil.rmtree(dest)
 
     # create dest directory
