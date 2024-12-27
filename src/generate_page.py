@@ -7,11 +7,9 @@ def generate_page(from_path, template_path, to_path):
     """
     Converts a markdown file to html, using the given template.
     """
-    print(f"Generating page...\nfrom:{from_path} \nto:{to_path} \nusing: {template_path}")
-
     # Get source markdown
     if os.path.exists(from_path) == False:
-        raise Exception(f"Source directory not found: {from_path}")
+        raise Exception(f"Source file not found: {from_path}")
 
     md_file = open(from_path)
     markdown = md_file.read()
@@ -35,6 +33,7 @@ def generate_page(from_path, template_path, to_path):
         os.makedirs(to_directory)
 
     # Write html to the destination file
+    print(f"    Writing: {to_path}")
     html_file = open(to_path, 'w')
     html_file.write(template)
     html_file.close()
@@ -47,28 +46,25 @@ def generate_pages_recursive(from_dir, template_file, to_dir, level: int=0):
     document, using the given template. Calls itself recursively
     for any sub-directories.
     """
-    print(f"\nRecursive page generation for markdown directory: {from_dir}\nWriting to dest: {to_dir}\n")
-
     # On initial call (before recursion), validate source root (must exist)
     if level == 0:
         if os.path.exists(from_dir) == False:
-            raise Exception(f"\nMarkdown directory not found: {from_dir}")
+            raise Exception(f"Markdown source directory not found: {from_dir}")
 
-    # On first-level recursion (sub-directory), remove destination (clean start)
-    # if level == 1:
-    #    if os.path.exists(to_dir) == True:
-    #        print(f"\nDeleting old destination directory: {to_dir}")
-    #        shutil.rmtree(to_dir)
-
+    # Process source files/sub-directories
     structure = os.listdir(from_dir)
 
     for item in structure:
+        # Build full path of source/destination
         src_item = os.path.join(from_dir, item)
-        dest_item = os.path.join(to_dir, item)
 
+        # Convert markdown file to html or recursively process sub-directory
         if os.path.isfile(src_item):
-            generate_page(src_item, template_file, dest_item)
+            if item.split('.')[1] == 'md':
+                dest_item = os.path.join(to_dir, f"{item.split('.')[0]}.html")
+                generate_page(src_item, template_file, dest_item)
         else:
+            dest_item = os.path.join(to_dir, item)
             generate_pages_recursive(src_item, template_file, dest_item, (level + 1))
 
     return 0

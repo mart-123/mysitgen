@@ -1,6 +1,6 @@
 import re
 import os
-from generate_page import generate_page
+from generate_page import generate_page, generate_pages_recursive
 from copy_directory import copy_directory
 
 def main():
@@ -11,20 +11,24 @@ def main():
         - Directory copy: 'static' to 'public'
         - Convert md document (root dir) to html ('public' dir)
     """
+    # Copy 'static' to 'public' (mainly images and similar resources)
     copy_src = "static"
     copy_dest = "public"
-    
     copy_src = f"{os.getcwd()}/{copy_src}"
     copy_dest = f"{os.getcwd()}/{copy_dest}"
     copy_directory(copy_src, copy_dest)
 
-    gen_src = "content/index.md"
-    gen_dest = "public/index.html"
+#    gen_src = "content/index.md"
+#    gen_dest = "public/index.html"
+    # Call recursive html generator
+    gen_src = "content"
+    gen_dest = "public"
     gen_template = "template.html"
     gen_src = f"{os.getcwd()}/{gen_src}"
     gen_dest = f"{os.getcwd()}/{gen_dest}"
     gen_template = f"{os.getcwd()}/{gen_template}"
-    generate_page(gen_src, gen_template, gen_dest)
+    print(f"Invoking recursive page generation...")
+    generate_pages_recursive(gen_src, gen_template, gen_dest)
 
 
 
