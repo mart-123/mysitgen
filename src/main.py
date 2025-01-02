@@ -27,7 +27,7 @@ def main():
     gen_src = f"{os.getcwd()}/{gen_src}"
     gen_dest = f"{os.getcwd()}/{gen_dest}"
     gen_template = f"{os.getcwd()}/{gen_template}"
-    print(f"Invoking recursive page generation...")
+    print(f"Invoking recursive page generation...\n    From: {gen_src}\n    To: {gen_dest}")
     generate_pages_recursive(gen_src, gen_template, gen_dest)
 
 
@@ -53,3 +53,6 @@ def messing_about():
 
 
 main()
+
+
+
